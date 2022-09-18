@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import FeedbackOptions from '../FeedbackOptions/FeedbackOptions';
 import Statistics from '../Statistics/Statistics';
 import Section from '../Section/Section';
-import {Box} from '../App/App.styled'
+import { Box } from '../App/App.styled';
 
 class App extends Component {
   static propTypes = {
-   //
- }
+    //
+  };
 
   state = {
     good: 0,
@@ -23,13 +23,17 @@ class App extends Component {
   };
 
   countTotalFeedback = () => {
-    const { good, bad, neutral } = this.state;
-    return good + bad + neutral;
+    return Object.values(this.state).reduce(
+      (totalFeedback, feedbackItems) => {
+        return totalFeedback + feedbackItems;
+      },
+      0
+    );
   };
 
   countPositiveFeedbackPercentage = () => {
-    const { good, bad, neutral } = this.state;
-    const totalFeedback = good + neutral + bad;
+    const { good } = this.state;
+    const totalFeedback = this.countTotalFeedback();
     return ((good / totalFeedback) * 100).toFixed(0);
   };
 
@@ -38,7 +42,7 @@ class App extends Component {
       <Box>
         <Section title="Please leave feedback">
           <FeedbackOptions
-            options={['good', 'bad', 'neutral']}
+            options={Object.keys(this.state)}
             onLeaveFeedback={this.handleFeedbackIncrement}
           />
         </Section>
@@ -54,6 +58,6 @@ class App extends Component {
       </Box>
     );
   }
-};
+}
 
 export default App;
